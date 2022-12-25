@@ -1,0 +1,37 @@
+name: todoapp
+
+on:
+  push:
+    # Trigger this workflow only on commits pushed to the main branch
+    branches:
+      - main
+
+# Dagger plan gets configured via client environment variables
+#env:
+  # This needs to be unique across all of netlify.app
+  #APP_NAME: todoapp-dagger-europa-test-foo
+  #NETLIFY_SITE_NAME: todoapp-dagger-europa-test-foo
+  #NETLIFY_TEAM: jpadams-ygovbw8
+  #NETLIFY_ACCOUNT: jpadams-ygovbw8
+
+jobs:
+  dagger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      # You need to run `dagger-cue project init` locally before and commit the cue.mod directory to the repository with its contents
+      - name: Install dagger-cue
+        run: |
+            cd /usr/local
+            curl -L https://dl.dagger.io/dagger-cue/install.sh | sh
+          # To pin external dependencies, you can use `project update github.com/[package-source]@v[n]`
+      - name: Deploy to Netlify
+        run: |
+            dagger-cue project update
+            dagger-cue do deploy
+        env:
+          # Get one from https://app.netlify.com/user/applications/personal
+          NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+

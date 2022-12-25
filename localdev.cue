@@ -13,5 +13,5 @@ client: {
 }
 actions: deploy: {
 	token: client.env.NETLIFY_TOKEN
-	site:  "\(client.env.USER)-dagger-todoapp"
+	site:  "\(client.env.USER)-foobarius-dagger-todoapp"
 }
